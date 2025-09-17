@@ -1,0 +1,18 @@
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using WebApiTeaShopManageMent.Models;
+
+namespace WebApiTeaShopManageMent.Data
+{
+    public class AppDbContext : DbContext
+    {
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Menu> Menu { get; set; }
+
+    }
+
+}
+
+
