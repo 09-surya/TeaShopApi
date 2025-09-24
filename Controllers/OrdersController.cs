@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using System.Data;
 using System.Drawing;
 using WebApiTeaShopManageMent.DAL;
 using WebApiTeaShopManageMent.Models;
@@ -11,6 +13,7 @@ namespace WebApiTeaShopManageMent.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
+        private string sqlConnection = "Server=SURYA;Database=TeashopeManageMent;Trusted_Connection=True;TrustServerCertificate=True;";
         private readonly TeaShopDal _dal = new TeaShopDal();
 
         // ✅ Place Order
@@ -180,6 +183,47 @@ namespace WebApiTeaShopManageMent.Controllers
             return Ok(new { orders, totalCount });
         }
 
+        [HttpGet]
+        [HttpGet("{customerName?}")]
+        public async Task<IActionResult> GetCustomerTotals(string? customerName = null)
+        {
+            var result = new List<CustomerTotal>();
+
+            using (var conn = new SqlConnection(sqlConnection))
+            {
+                using (var cmd = new SqlCommand("Sp_GetCustomerTotals", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    if (!string.IsNullOrEmpty(customerName))
+                        cmd.Parameters.AddWithValue("@CustomerName", customerName);
+
+                    await conn.OpenAsync();
+                    using (var reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            result.Add(new CustomerTotal
+                            {
+                                CustomerName = reader["CustomerName"].ToString(),
+                                TotalAmount = reader["TotalAmount"] != DBNull.Value
+                                    ? (decimal)reader["TotalAmount"]
+                                    : 0
+                            });
+                        }
+                    }
+                }
+            }
+
+            return Ok(result);
+        }
+
+        public class CustomerTotal
+    {
+        public string? CustomerName { get; set; }
+        public decimal TotalAmount { get; set; }
     }
+
+}
 }
 

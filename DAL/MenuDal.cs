@@ -1,12 +1,15 @@
 ﻿using Microsoft.Data.SqlClient;
 using WebApiTeaShopManageMent.Models;
+using Npgsql;
 
 namespace WebApiTeaShopManageMent.DAL
 {
     public class MenuDal
     {
-        private string sqlConnection = "Server=SURYA;Database=TeashopeManageMent;Trusted_Connection=True;TrustServerCertificate=True;";
-        private string selectMenuQuery = "SELECT * FROM Menu";
+
+    //private string sqlConnection = "Host=postgres.railway.internal;Port=5432;Database=railway;Username=postgres;Password=oYgTBEztkWOkSHdZVpCnmvwxtwJymmaT;";
+    private string sqlConnection = "Server=SURYA;Database=TeashopeManageMent;Trusted_Connection=True;TrustServerCertificate=True;";
+    private string selectMenuQuery = "SELECT * FROM Menu";
 
         public List<Menu> GetMenu()
         {

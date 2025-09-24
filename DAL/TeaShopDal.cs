@@ -4,13 +4,15 @@ using System.Data;
 using System.Data.SqlClient;
 using WebApiTeaShopManageMent.Models;
 using Microsoft.Data.SqlClient;
+using Npgsql;
 
 namespace WebApiTeaShopManageMent.DAL
 {
     public class TeaShopDal
     {
+
+        //private string sqlConnection = "Host=containers-us-west-87.railway.app;Port=5432;Database=railway;Username=user123;Password=secretPass;";
         private string sqlConnection = "Server=SURYA;Database=TeashopeManageMent;Trusted_Connection=True;TrustServerCertificate=True;";
-        // Queries
         private string insertOrderQuery = "INSERT INTO Orders(Item, Qty, Price, Date) VALUES(@Item, @Qty, @Price, @Date)";
         private string selectOrdersQuery = "SELECT * FROM Orders";
         private string totalSalesQuery = "SELECT ISNULL(SUM(Qty * Price), 0) FROM Orders WHERE CAST(Date AS DATE) = CAST(GETDATE() AS DATE)";
